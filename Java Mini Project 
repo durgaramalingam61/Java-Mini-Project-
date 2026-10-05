@@ -1,0 +1,204 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+// Abstraction
+abstract class User {
+    private String name; // Encapsulation
+
+    User(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    abstract void display();
+}
+
+// Inheritance
+class Customer extends User {
+    Customer(String name) {
+        super(name);
+    }
+
+    // Polymorphism
+    @Override
+    void display() {
+        System.out.println("Welcome, " + getName() + "!");
+    }
+}
+
+// Food class
+class Food {
+    private int id;
+    private String name;
+    private double price;
+
+    Food(int id, String name, double price) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    void display() {
+        System.out.println(id + ". " + name + " - Rs." + price);
+    }
+}
+
+// Main application
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        // Collections
+        ArrayList<Food> menu = new ArrayList<>();
+        ArrayList<Food> cart = new ArrayList<>();
+        ArrayList<Integer> quantities = new ArrayList<>();
+        
+menu.add(new Food(1, "Crispy Chicken Burger", 149));
+menu.add(new Food(2, "Margherita Pizza", 199));
+menu.add(new Food(3, "Peri Peri Fries", 99));
+menu.add(new Food(4, "White Sauce Pasta", 179));
+menu.add(new Food(5, "Paneer Tikka Roll", 129));
+menu.add(new Food(6, "Veg Momos", 89));
+menu.add(new Food(7, "Veg Pulao", 159));
+menu.add(new Food(8, "Chicken Biryani", 219));
+menu.add(new Food(9, "Chocolate Lava Cake", 109));
+menu.add(new Food(10, "Oreo Milkshake", 119));
+menu.add(new Food(11, "Cold Coffee", 99));
+menu.add(new Food(12, "Cheese Garlic Bread", 129));
+menu.add(new Food(13, "Pav Bhaji", 119));
+menu.add(new Food(14, "Farmhouse Pizza", 249));
+menu.add(new Food(15, "Chocolate Brownie", 99));
+
+
+
+        System.out.print("Enter your name: ");
+        Customer customer = new Customer(sc.nextLine());
+
+        // Runtime polymorphism
+        User user = customer;
+        user.display();
+
+        int choice = 0;
+
+        do {
+            System.out.println("\n=== ONLINE FOOD ORDERING SYSTEM ===");
+            System.out.println("1. View Food Menu");
+            System.out.println("2. Add Food to Cart");
+            System.out.println("3. View Bill");
+            System.out.println("4. Place Order");
+            System.out.println("5. Exit");
+            System.out.print("Enter choice: ");
+
+            try {
+                choice = Integer.parseInt(sc.nextLine());
+
+                switch (choice) {
+                    case 1:
+                        for (Food f : menu) {
+                            f.display();
+                        }
+                        break;
+
+                    case 2:
+                        for (Food f : menu) {
+                            f.display();
+                        }
+
+                        System.out.print("Enter food ID: ");
+                        int id = Integer.parseInt(sc.nextLine());
+
+                        System.out.print("Enter quantity: ");
+                        int qty = Integer.parseInt(sc.nextLine());
+
+                        if (qty <= 0) {
+                            System.out.println("Invalid quantity!");
+                            break;
+                        }
+
+                        Food selected = null;
+
+                        for (Food f : menu) {
+                            if (f.getId() == id) {
+                                selected = f;
+                                break;
+                            }
+                        }
+
+                        if (selected != null) {
+                            cart.add(selected);
+                            quantities.add(qty);
+                            System.out.println("Food added to cart!");
+                        } else {
+                            System.out.println("Invalid food ID!");
+                        }
+                        break;
+
+                    case 3:
+                        double total = 0;
+
+                        System.out.println("\n=== YOUR BILL ===");
+
+                        for (int i = 0; i < cart.size(); i++) {
+                            Food f = cart.get(i);
+                            int q = quantities.get(i);
+                            double amount = f.getPrice() * q;
+
+                            System.out.println(
+                                f.getName() + " x " + q
+                                + " = Rs." + amount
+                            );
+
+                            total += amount;
+                        }
+
+                        System.out.println("Total: Rs." + total);
+                        break;
+
+                    case 4:
+                        if (cart.isEmpty()) {
+                            System.out.println("Your cart is empty!");
+                        } else {
+                            System.out.println(
+                                "Order placed successfully!"
+                            );
+                            System.out.println(
+                                "Thank you for ordering!"
+                            );
+
+                            cart.clear();
+                            quantities.clear();
+                        }
+                        break;
+
+                    case 5:
+                        System.out.println("Thank you! Visit again.");
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice!");
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number!");
+            }
+
+        } while (choice != 5);
+
+        sc.close();
+    }
+}
